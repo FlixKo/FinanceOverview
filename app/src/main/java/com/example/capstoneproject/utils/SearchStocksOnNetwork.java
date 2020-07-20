@@ -25,7 +25,7 @@ public class SearchStocksOnNetwork {
             @Override
             public void run() {
                 StockDatabase stockDatabase = StockDatabase.getInstance(context);
-                stockDatabase.stockDao().deleteAllStocks();
+                //stockDatabase.stockDao().deleteAllStocks();
                 String stocksResult = null;
                 try {
                     stocksResult = NetworkUtils.getResponseFromHttpUrl(url);

@@ -88,7 +88,8 @@ public class StockDetailsActivity extends AppCompatActivity {
                 if (stock != null) {
                     stock_name.setText(stock.getLatest_trading_day());
                     stock_symbol.setText(stock.getSymbol());
-                    stock_price.setText(Double.toString(stock.getPrice()));
+                    stock_price.setText(Double.toString(stock.getNumberShares()));
+                    //stock_price.setText(Double.toString(stock.getPrice()));
                     edit_shares.setText(Double.toString(stock.getNumberShares()));
                 }
 

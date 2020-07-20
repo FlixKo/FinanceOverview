@@ -39,6 +39,7 @@ public class FetchStockFromNetwork {
                         Stock updatedStock = JSONUtils.extractStockFromJSON(stockResult, stock);
                         Log.d(LOG_TAG, updatedStock.getSymbol() + "; price: " + updatedStock.getPrice());
                         Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(updatedStock.getSymbol());
+                        updatedStock.setNumberShares(dbStock.getNumberShares());
                         if (dbStock != null) {
                             stockDatabase.stockDao().deleteStock(dbStock);
                         }
