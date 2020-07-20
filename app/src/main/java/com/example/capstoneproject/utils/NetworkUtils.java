@@ -17,7 +17,8 @@ public class NetworkUtils {
 //https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo
     // https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=BA&apikey=demo
     private final static String API_KEY_PARAM = "apikey";
-    private final static String API_KEY = "4WPCI0VKCTPEKSVL";
+    //private final static String API_KEY = "4WPCI0VKCTPEKSVL";
+    private final static String API_KEY = "LHAVWG8KRM9KG1LH";
     private final static String BASE_URL = "https://www.alphavantage.co/query?";
     private final static String FUNCTION_PARAM = "function";
     private final static String FUNCTION = "GLOBAL_QUOTE";

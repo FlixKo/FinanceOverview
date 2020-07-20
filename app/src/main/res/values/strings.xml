@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">CapstoneProject</string>
     <string name="search_results">Search Results</string>
+    <string name="search_hint">enter stock symbol here</string>
+    <string name="search">Search</string>
+    <string name="number_of_shares_owned">Number of shares owned:</string>
+    <string name="add_shares_to_portfolio">Add shares to portfolio</string>
 </resources>

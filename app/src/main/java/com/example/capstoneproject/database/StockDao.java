@@ -28,9 +28,15 @@ public interface StockDao {
     @Delete
     void deleteStock(Stock stock);
 
+    @Query ("DELETE FROM stock")
+    void deleteAllStocks();
+
     @Query("SELECT * FROM stock WHERE symbol = :symbol")
     LiveData<Stock> loadLiveStockBySymbol(String symbol);
 
     @Query("SELECT * FROM stock WHERE symbol = :symbol")
     Stock loadStockBySymbol(String symbol);
+
+    @Query("SELECT * FROM stock WHERE numberShares > 0")
+    Stock loadPortfolio();
 }

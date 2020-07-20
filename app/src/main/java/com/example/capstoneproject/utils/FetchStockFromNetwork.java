@@ -3,6 +3,8 @@ package com.example.capstoneproject.utils;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.capstoneproject.database.StockDatabase;
 import com.example.capstoneproject.model.Stock;
 
@@ -14,8 +16,8 @@ import java.net.URL;
 public class FetchStockFromNetwork {
     private static final String LOG_TAG = FetchStockFromNetwork.class.getSimpleName();
 
-    public static void getStock(Context context, Stock stock, String stockSymbol) {
-        URL getStockUrl = NetworkUtils.buildUrl(stockSymbol);
+    public static void getStock(Context context, Stock stock) {
+        URL getStockUrl = NetworkUtils.buildUrl(stock.getSymbol());
         getStockDetails(getStockUrl, context, stock);
     }
 
@@ -34,16 +36,13 @@ public class FetchStockFromNetwork {
 
                 if (stockResult != null) {
                     try {
-                        JSONUtils.extractStockFromJSON(stockResult, stock);
-                            Log.d(LOG_TAG, stock.getName() + "; symbol: " + stock.getSymbol());
-                             Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(stock.getSymbol());
-                            if (dbStock != null) {
-                                //networkMovie.setFavorite(dbMovie.isFavorite());
-                                //networkMovie.setFavorite(false);
-                                stockDatabase.stockDao().updateStock(stock);
-                            } else {
-                                stockDatabase.stockDao().insertStock(stock);
-                            }
+                        Stock updatedStock = JSONUtils.extractStockFromJSON(stockResult, stock);
+                        Log.d(LOG_TAG, updatedStock.getSymbol() + "; price: " + updatedStock.getPrice());
+                        Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(updatedStock.getSymbol());
+                        if (dbStock != null) {
+                            stockDatabase.stockDao().deleteStock(dbStock);
+                        }
+                        stockDatabase.stockDao().insertStock(updatedStock);
 
                     } catch (JSONException e) {
                         e.printStackTrace();

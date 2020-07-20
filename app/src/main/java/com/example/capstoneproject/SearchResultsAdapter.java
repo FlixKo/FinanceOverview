@@ -28,6 +28,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         this.ctx = ctx;
     }
 
+
     void setStocksList(List<Stock> stocks) {
         this.stocks = stocks;
     }
@@ -46,7 +47,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     @Override
     public void onBindViewHolder(@NonNull SearchResultsHolder holder, int position) {
-        holder.textView.setText(stocks.get(position).getSymbol());
+        holder.textView.setText(stocks.get(position).getName() + "(" + stocks.get(position).getSymbol() + ")");
     }
 
     @Override

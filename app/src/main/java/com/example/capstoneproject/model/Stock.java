@@ -3,6 +3,7 @@ package com.example.capstoneproject.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -43,6 +44,7 @@ public class Stock implements Parcelable {
     private double previous_close;
     private double change;
     private String change_percent;
+    private double numberShares;
 
     public Stock(int id, String symbol, String name, String type, String region, String marketOpen, String markedClose, String timezone, String currency, String matchScore) {
         this.id = id;
@@ -55,6 +57,7 @@ public class Stock implements Parcelable {
         this.timezone = timezone;
         this.currency = currency;
         this.matchScore = matchScore;
+        this.numberShares = 0;
     }
 
     @Ignore
@@ -68,6 +71,7 @@ public class Stock implements Parcelable {
         this.timezone = timezone;
         this.currency = currency;
         this.matchScore = matchScore;
+        this.numberShares = 0;
     }
 
     @Ignore
@@ -81,6 +85,15 @@ public class Stock implements Parcelable {
         this.timezone = parcel.readString();
         this.currency = parcel.readString();
         this.matchScore = parcel.readString();
+        this.numberShares = parcel.readDouble();
+    }
+
+    public double getNumberShares() {
+        return numberShares;
+    }
+
+    public void setNumberShares(double numberShares) {
+        this.numberShares = numberShares;
     }
 
     public String getName() {
@@ -243,5 +256,6 @@ public class Stock implements Parcelable {
         parcel.writeString(this.timezone);
         parcel.writeString(this.currency);
         parcel.writeString(this.matchScore);
+        parcel.writeDouble(this.numberShares);
     }
 }

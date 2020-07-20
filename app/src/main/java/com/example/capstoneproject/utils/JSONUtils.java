@@ -1,4 +1,5 @@
 package com.example.capstoneproject.utils;
+
 import android.util.Log;
 
 import com.example.capstoneproject.model.Stock;
@@ -34,11 +35,10 @@ public class JSONUtils {
     private final static String JSON_CURRENCY = "8. currency";
     private final static String JSON_MATCH_SCORE = "9. matchScore";
 
-    public static void extractStockFromJSON(String mJsonString, Stock stock) throws JSONException {
+    public static Stock extractStockFromJSON(String mJsonString, Stock stock) throws JSONException {
         JSONObject jsonString = new JSONObject(mJsonString);
         JSONObject result = jsonString.getJSONObject(JSON_GLOBAL_QUOTE);
 
-        String symbol = result.getString(JSON_SYMBOL);
         double open = result.getDouble(JSON_OPEN);
         double high = result.getDouble(JSON_HIGH);
         double low = result.getDouble(JSON_LOW);
@@ -48,25 +48,20 @@ public class JSONUtils {
         double previous_close = result.getDouble(JSON_PREVIOUS_CLOSE);
         double change = result.getDouble(JSON_CHANGE);
         String change_percent = result.getString(JSON_CHANGE_PERCENT);
-
-        if(stock.getSymbol().equals(symbol)){
-            stock.setOpen(open);
-            stock.setHigh(high);
-            stock.setLow(low);
-            stock.setPrice(price);
-            stock.setVolume(volume);
-            stock.setLatest_trading_day(latest_trading_day);
-            stock.setPrevious_close(previous_close);
-            stock.setChange(change);
-            stock.setChange_percent(change_percent);
-        }else{
-            Log.e(LOG_TAG, "Stock symbols don't match");
-        }
-
+        stock.setOpen(open);
+        stock.setHigh(high);
+        stock.setLow(low);
+        stock.setPrice(price);
+        stock.setVolume(volume);
+        stock.setLatest_trading_day(latest_trading_day);
+        stock.setPrevious_close(previous_close);
+        stock.setChange(change);
+        stock.setChange_percent(change_percent);
+        return stock;
     }
 
 
-    public static ArrayList<Stock> extractStockFromSeachString(String mJsonString) throws JSONException{
+    public static ArrayList<Stock> extractStockFromSeachString(String mJsonString) throws JSONException {
         JSONObject jsonString = new JSONObject(mJsonString);
         JSONArray resultsArray = jsonString.getJSONArray(JSON_BEST_MATCHES);
 
@@ -82,7 +77,7 @@ public class JSONUtils {
         String currency;
         String matchScore;
 
-        for(int i = 0; i < resultsArray.length(); i++){
+        for (int i = 0; i < resultsArray.length(); i++) {
 
             JSONObject currentStock = resultsArray.getJSONObject(i);
             symbol = currentStock.getString(JSON_SYMBOL_SEARCH);
@@ -94,7 +89,7 @@ public class JSONUtils {
             timezone = currentStock.getString(JSON_TIMEZONE);
             currency = currentStock.getString(JSON_CURRENCY);
             matchScore = currentStock.getString(JSON_MATCH_SCORE);
-            stockSearchResultsArray.add(new Stock(symbol,name,type,region,marketOpen,markedClose,timezone,currency,matchScore));
+            stockSearchResultsArray.add(new Stock(symbol, name, type, region, marketOpen, markedClose, timezone, currency, matchScore));
         }
 
         return stockSearchResultsArray;
