@@ -17,6 +17,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.charts.Pie;
 import com.example.capstoneproject.database.StockDatabase;
 import com.example.capstoneproject.model.Stock;
 import com.example.capstoneproject.model.StockViewModel;
@@ -31,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
 
 
     private static String LOG_TAG = MainActivity.class.getName();
-
+    AnyChartView anyChartView;
+    PortfolioAdapter portfolioAdapter;
+    RecyclerView portfolioView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +55,12 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
             }
         });
 
+        anyChartView = findViewById(R.id.any_chart_view);
+        //setUpPieChart(dbStock);
+
         ArrayList<Stock> emptyList = new ArrayList<>();
-        final RecyclerView portfolioView = findViewById(R.id.main_portfolio_recycler_view);
-        final PortfolioAdapter portfolioAdapter = new PortfolioAdapter(emptyList, this, getApplicationContext());
+        portfolioView = findViewById(R.id.main_portfolio_recycler_view);
+        portfolioAdapter = new PortfolioAdapter(emptyList, this, getApplicationContext());
         portfolioView.setLayoutManager(new LinearLayoutManager(this));
         portfolioView.setAdapter(portfolioAdapter);
 
@@ -59,16 +69,27 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
             public void run() {
                 StockDatabase stockDatabase = StockDatabase.getInstance(getApplicationContext());
                 List<Stock> dbStock = stockDatabase.stockDao().loadPortfolio();
+
                 if(dbStock != null){
                     //TextView textView = findViewById(R.id.hello_world_text_view);
                     //textView.setText("Name: " + dbStock.getName() + "Price: " + dbStock.getPrice());
                     Log.d(LOG_TAG,"Name: " + dbStock.get(0).getName() + "Price: " + dbStock.get(0).getPrice());
                     portfolioAdapter.setStocksList(dbStock);
                     portfolioView.setAdapter(portfolioAdapter);
+                    setUpPieChart(dbStock);
                 }
             }
         });
+    }
 
+    public void setUpPieChart(List<Stock> stocks){
+        Pie pie = AnyChart.pie();
+        List<DataEntry> elements = new ArrayList<>();
+        for (int i = 0; i < stocks.size(); i++){
+            elements.add(new ValueDataEntry(stocks.get(i).getSymbol(),stocks.get(i).getNumberShares()));
+        }
+        pie.data(elements);
+        anyChartView.setChart(pie);
     }
 
     private void showNoNetworkErrorMessage() {
