@@ -86,6 +86,7 @@ public class Stock implements Parcelable {
         this.currency = parcel.readString();
         this.matchScore = parcel.readString();
         this.numberShares = parcel.readDouble();
+        this.id = parcel.readInt();
     }
 
     public double getNumberShares() {
@@ -257,5 +258,6 @@ public class Stock implements Parcelable {
         parcel.writeString(this.currency);
         parcel.writeString(this.matchScore);
         parcel.writeDouble(this.numberShares);
+        parcel.writeInt(this.id);
     }
 }

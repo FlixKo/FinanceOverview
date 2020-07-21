@@ -68,18 +68,30 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
             @Override
             public void run() {
                 StockDatabase stockDatabase = StockDatabase.getInstance(getApplicationContext());
-                List<Stock> dbStock = stockDatabase.stockDao().loadPortfolio();
-
-                if(dbStock != null){
-                    //TextView textView = findViewById(R.id.hello_world_text_view);
-                    //textView.setText("Name: " + dbStock.getName() + "Price: " + dbStock.getPrice());
+                final List<Stock> dbStock = stockDatabase.stockDao().loadPortfolio();
+                if(dbStock != null && dbStock.size() > 0){
                     Log.d(LOG_TAG,"Name: " + dbStock.get(0).getName() + "Price: " + dbStock.get(0).getPrice());
                     portfolioAdapter.setStocksList(dbStock);
                     portfolioView.setAdapter(portfolioAdapter);
-                    setUpPieChart(dbStock);
+
+                    anyChartView.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Pie pie = AnyChart.pie();
+                            List<DataEntry> elements = new ArrayList<>();
+                            for (int i = 0; i < dbStock.size(); i++){
+                                Double value = dbStock.get(i).getNumberShares() * dbStock.get(i).getPrice();
+                                elements.add(new ValueDataEntry(dbStock.get(i).getName(),value));
+                            }
+                            pie.data(elements);
+                            anyChartView.setChart(pie);
+                        }
+                    });
                 }
             }
         });
+
     }
 
     public void setUpPieChart(List<Stock> stocks){
@@ -99,32 +111,11 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
         Log.e(LOG_TAG,"No Network");
     }
 
-    @SuppressWarnings("deprecation")
-    private boolean isConnected(Context context) {
-
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (cm != null) {
-                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
-                if (capabilities != null) {
-                    return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
-                }
-            }
-        } else {
-            if (cm != null) {
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                if (activeNetwork != null) {
-                    return (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) ||
-                            (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE);
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
     public void onClick(Stock stock) {
         Log.d(LOG_TAG,"clicked on " + stock.getName());
+        Intent intent = new Intent(getApplicationContext(), StockDetailsActivity.class);
+        intent.putExtra("stock", stock);
+        startActivity(intent);
     }
 }

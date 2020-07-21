@@ -33,4 +33,6 @@ dependencies {
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
     implementation 'androidx.room:room-runtime:2.2.5'
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 }

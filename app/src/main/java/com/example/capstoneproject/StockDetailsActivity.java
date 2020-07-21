@@ -1,6 +1,5 @@
 package com.example.capstoneproject;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -20,40 +20,54 @@ import com.example.capstoneproject.model.Stock;
 import com.example.capstoneproject.model.StockViewModel;
 import com.example.capstoneproject.utils.AppExecutors;
 import com.example.capstoneproject.utils.FetchStockFromNetwork;
+import com.example.capstoneproject.utils.NetworkUtils;
 
 import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class StockDetailsActivity extends AppCompatActivity {
     private static String LOG_TAG = StockDetailsActivity.class.getName();
 
     Stock stock;
-    TextView stock_name;
-    TextView stock_symbol;
-    TextView stock_price;
-    EditText edit_shares;
     private StockViewModel stockViewModel;
+
+    @BindView(R.id.stock_name) TextView stock_name;
+    @BindView(R.id.stock_symbol) TextView stock_symbol;
+    @BindView(R.id.stock_price) TextView stock_price;
+    @BindView(R.id.number_of_shares_owned) EditText edit_shares;
+    @BindView(R.id.pb_loading_indicator_details) ProgressBar progressBar;
+    @BindView(R.id.tv_error_message_display_details) TextView errorText;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stock_details_activity);
-        stock_name = findViewById(R.id.stock_name);
-        stock_symbol = findViewById(R.id.stock_symbol);
-        stock_price = findViewById(R.id.stock_price);
-        edit_shares = findViewById(R.id.number_of_shares_owned);
+        ButterKnife.bind(this);
+
         stockViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(
                 getApplication()).create(StockViewModel.class);
-
-        final StockDatabase stockDatabase = StockDatabase.getInstance(getApplicationContext());
 
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("stock")) {
                 stock = Objects.requireNonNull(intentThatStartedThisActivity.getExtras()).getParcelable("stock");
-                setTitle(stock.getName());
-                FetchStockFromNetwork.getStock(getApplicationContext(), stock);
-                getStock(stock.getSymbol());
+                if(stock != null){
+                    setTitle(stock.getName());
+                    progressBar.setVisibility(View.VISIBLE);
+                    if(NetworkUtils.isConnected(getApplicationContext())){
+                        FetchStockFromNetwork.getStock(getApplicationContext(), stock);
+                        getStock(stock.getSymbol());
+                    }else{
+                        showNoNetworkErrorMessage();
+                    }
+                }else{
+                    errorText.setText(getString(R.string.error_message));
+                    setErrorVisible();
+                }
+
             }
         }
 
@@ -89,19 +103,44 @@ public class StockDetailsActivity extends AppCompatActivity {
         });
     }
 
+    private void showNoNetworkErrorMessage() {
+        errorText.setText(getString(R.string.no_network_details));
+        setErrorVisible();
+        Log.e(LOG_TAG, String.valueOf(R.string.no_network_details));
+    }
+
     private void getStock(String symbol) {
         stockViewModel.getStock(symbol).observe(this, new Observer<Stock>() {
             @Override
             public void onChanged(Stock stock) {
+                progressBar.setVisibility(View.INVISIBLE);
                 if (stock != null) {
                     stock_name.setText(stock.getLatest_trading_day());
                     stock_symbol.setText(stock.getSymbol());
                     stock_price.setText(Double.toString(stock.getNumberShares()));
                     //stock_price.setText(Double.toString(stock.getPrice()));
                     edit_shares.setText(Double.toString(stock.getNumberShares()));
+                    setErrorInvisible();
+                }else{
+                    setErrorVisible();
                 }
 
             }
         });
+    }
+    private void setErrorInvisible(){
+        stock_name.setVisibility(View.VISIBLE);
+        stock_symbol.setVisibility(View.VISIBLE);
+        stock_price.setVisibility(View.VISIBLE);
+        edit_shares.setVisibility(View.VISIBLE);
+        errorText.setVisibility(View.INVISIBLE);
+    }
+
+    private void setErrorVisible(){
+        stock_name.setVisibility(View.INVISIBLE);
+        stock_symbol.setVisibility(View.INVISIBLE);
+        stock_price.setVisibility(View.INVISIBLE);
+        edit_shares.setVisibility(View.INVISIBLE);
+        errorText.setVisibility(View.VISIBLE);
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CapstoneProject</string>
+    <string name="app_name">FinanceOverview</string>
     <string name="search_results">Search Results</string>
     <string name="search_hint">enter stock symbol here</string>
     <string name="search">Search</string>
@@ -7,4 +7,8 @@
     <string name="add_shares_to_portfolio">Add shares to portfolio</string>
     <string name="dummy_stock_name_dsn">dummy stock name (DSN)</string>
     <string name="dummy_stock_price">1223.92 USD</string>
+    <string name="error_message">Failed to get results. Please try again.</string>
+    <string name="no_network_search">No active network connection. Searching for assets failed.</string>
+    <string name="no_network_details">No active network connection. Getting details for asset failed.</string>
+    <string name="no_search_result">No results found.</string>
 </resources>

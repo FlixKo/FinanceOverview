@@ -46,4 +46,20 @@
         android:layout_height="wrap_content"
         android:id="@+id/save_store_details_button"
         android:text="@string/add_shares_to_portfolio"/>
+
+    <ProgressBar
+        android:id="@+id/pb_loading_indicator_details"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tv_error_message_display_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/no_network_details"
+        android:textSize="22sp"
+        android:visibility="invisible" />
 </LinearLayout>

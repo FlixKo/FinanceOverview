@@ -1,6 +1,11 @@
 package com.example.capstoneproject.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -74,6 +79,30 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static boolean isConnected(Context context) {
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (cm != null) {
+                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                if (capabilities != null) {
+                    return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
+                }
+            }
+        } else {
+            if (cm != null) {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork != null) {
+                    return (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) ||
+                            (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE);
+                }
+            }
+        }
+        return false;
     }
 
 }
