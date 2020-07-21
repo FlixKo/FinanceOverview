@@ -1,7 +1,10 @@
 package com.example.capstoneproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +15,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
+import com.example.capstoneproject.database.StockDatabase;
+import com.example.capstoneproject.model.Stock;
 import com.example.capstoneproject.model.StockViewModel;
+import com.example.capstoneproject.utils.AppExecutors;
 import com.example.capstoneproject.utils.SearchStocksOnNetwork;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements PortfolioAdapter.PortfolioAdapterOnClickHandler{
 
 
     private static String LOG_TAG = MainActivity.class.getName();
@@ -37,6 +47,28 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ArrayList<Stock> emptyList = new ArrayList<>();
+        final RecyclerView portfolioView = findViewById(R.id.main_portfolio_recycler_view);
+        final PortfolioAdapter portfolioAdapter = new PortfolioAdapter(emptyList, this, getApplicationContext());
+        portfolioView.setLayoutManager(new LinearLayoutManager(this));
+        portfolioView.setAdapter(portfolioAdapter);
+
+        AppExecutors.getInstance().networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                StockDatabase stockDatabase = StockDatabase.getInstance(getApplicationContext());
+                List<Stock> dbStock = stockDatabase.stockDao().loadPortfolio();
+                if(dbStock != null){
+                    //TextView textView = findViewById(R.id.hello_world_text_view);
+                    //textView.setText("Name: " + dbStock.getName() + "Price: " + dbStock.getPrice());
+                    Log.d(LOG_TAG,"Name: " + dbStock.get(0).getName() + "Price: " + dbStock.get(0).getPrice());
+                    portfolioAdapter.setStocksList(dbStock);
+                    portfolioView.setAdapter(portfolioAdapter);
+                }
+            }
+        });
+
     }
 
     private void showNoNetworkErrorMessage() {
@@ -70,4 +102,8 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    public void onClick(Stock stock) {
+        Log.d(LOG_TAG,"clicked on " + stock.getName());
+    }
 }

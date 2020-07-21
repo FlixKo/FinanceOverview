@@ -43,7 +43,8 @@ public class FetchStockFromNetwork {
                         if (dbStock != null) {
                             stockDatabase.stockDao().deleteStock(dbStock);
                         }
-                        stockDatabase.stockDao().insertStock(updatedStock);
+                        long result = stockDatabase.stockDao().insertStock(updatedStock);
+                        Log.d(LOG_TAG, "insertion result: " + result);
 
                     } catch (JSONException e) {
                         e.printStackTrace();

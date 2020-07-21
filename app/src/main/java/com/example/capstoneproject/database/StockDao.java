@@ -19,11 +19,11 @@ public interface StockDao {
     @Query("SELECT * FROM stock ORDER BY symbol")
     LiveData<List<Stock>> loadAllStocks();
 
-    @Insert
-    void insertStock(Stock stock);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertStock(Stock stock);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateStock(Stock stock);
+    int updateStock(Stock stock);
 
     @Delete
     void deleteStock(Stock stock);
@@ -38,5 +38,5 @@ public interface StockDao {
     Stock loadStockBySymbol(String symbol);
 
     @Query("SELECT * FROM stock WHERE numberShares > 0")
-    Stock loadPortfolio();
+    List<Stock> loadPortfolio();
 }
