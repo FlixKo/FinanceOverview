@@ -39,6 +39,8 @@ public class StockDetailsActivity extends AppCompatActivity {
     @BindView(R.id.number_of_shares_owned) EditText edit_shares;
     @BindView(R.id.pb_loading_indicator_details) ProgressBar progressBar;
     @BindView(R.id.tv_error_message_display_details) TextView errorText;
+    @BindView(R.id.stock_region) TextView stock_region;
+    @BindView(R.id.stock_currency) TextView stock_currency;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -115,10 +117,11 @@ public class StockDetailsActivity extends AppCompatActivity {
             public void onChanged(Stock stock) {
                 progressBar.setVisibility(View.INVISIBLE);
                 if (stock != null) {
-                    stock_name.setText(stock.getLatest_trading_day());
+                    stock_name.setText(stock.getName());
                     stock_symbol.setText(stock.getSymbol());
-                    stock_price.setText(Double.toString(stock.getNumberShares()));
-                    //stock_price.setText(Double.toString(stock.getPrice()));
+                    stock_price.setText(Double.toString(stock.getPrice()));
+                    stock_currency.setText(stock.getCurrency());
+                    stock_region.setText(stock.getRegion());
                     edit_shares.setText(Double.toString(stock.getNumberShares()));
                     setErrorInvisible();
                 }else{

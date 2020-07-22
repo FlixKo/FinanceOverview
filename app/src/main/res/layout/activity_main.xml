@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="-16dp" />
+        tools:layout_editor_absoluteX="191dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -32,7 +32,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/cardview_dark_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/main_portfolio_recycler_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/main_portfolio_recycler_view"
         app:srcCompat="@android:drawable/ic_input_add" />

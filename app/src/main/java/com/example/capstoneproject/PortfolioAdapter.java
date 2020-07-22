@@ -18,7 +18,6 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.Port
 
     private List<Stock> stocks;
     private final PortfolioAdapterOnClickHandler clickHandler;
-    private final String LOG_TAG = PortfolioAdapter.class.getName();
 
     private final Context ctx;
 
@@ -50,6 +49,9 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.Port
         holder.nameTextView.setText(stocks.get(position).getName() + " (" + stocks.get(position).getSymbol() + ")");
         double value = stocks.get(position).getNumberShares() * stocks.get(position).getPrice();
         holder.valueTextView.setText(Double.toString(value) + " " + stocks.get(position).getCurrency());
+        holder.numShares.setText(Double.toString(stocks.get(position).getNumberShares()));
+        holder.currentPrice.setText(Double.toString(stocks.get(position).getPrice()));
+        holder.currency.setText(stocks.get(position).getCurrency());
     }
 
     @Override
@@ -61,11 +63,17 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.Port
 
         final TextView nameTextView;
         final TextView valueTextView;
+        final TextView numShares;
+        final TextView currentPrice;
+        final TextView currency;
 
         public PortfolioHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.portfolio_text_view);
             valueTextView = itemView.findViewById(R.id.value_text_view);
+            numShares = itemView.findViewById(R.id.number_of_shares_owned_text_view);
+            currentPrice = itemView.findViewById(R.id.currency_text_view);
+            currency = itemView.findViewById(R.id.currency_text_view);
             itemView.setOnClickListener(this);
         }
 
