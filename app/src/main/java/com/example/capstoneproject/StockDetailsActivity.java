@@ -89,12 +89,14 @@ public class StockDetailsActivity extends AppCompatActivity {
                         StockDatabase stockDatabase = StockDatabase.getInstance(getApplicationContext());
                         Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(stock.getSymbol());
                         if(dbStock != null){
-                            //stockDatabase.stockDao().deleteStock(stock);
-                            int result = stockDatabase.stockDao().updateStock(stock);
-                            Log.d(LOG_TAG,"update result: " + result);
-                        }else{
-                            stockDatabase.stockDao().insertStock(stock);
+                            stockDatabase.stockDao().deleteStock(stock);
+                            //int result = stockDatabase.stockDao().updateStock(stock);
+                            //Log.d(LOG_TAG,"update result: " + result);
                         }
+                        //else{
+                            long result = stockDatabase.stockDao().insertStock(stock);
+                            Log.d(LOG_TAG,"insert result: " + result);
+                        //}
 
                     }
                 });

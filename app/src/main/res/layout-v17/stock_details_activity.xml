@@ -12,7 +12,7 @@
         android:padding="6dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/stock_name" />
@@ -33,7 +33,7 @@
         android:padding="6dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/stock_symbol" />
@@ -52,7 +52,7 @@
         android:padding="6dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/stock_price" />
@@ -77,7 +77,7 @@
         android:padding="6dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/stock_region" />
@@ -104,8 +104,7 @@
             android:id="@+id/number_of_shares_owned"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
-             />
+            android:gravity="end"/>
 
     </LinearLayout>
 
@@ -114,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_shares_to_portfolio"
-        android:layout_gravity="right"/>
+        android:layout_gravity="end"/>
 
     <ProgressBar
         android:id="@+id/pb_loading_indicator_details"

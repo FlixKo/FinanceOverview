@@ -1,21 +1,13 @@
 package com.example.capstoneproject;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -24,9 +16,10 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.capstoneproject.database.StockDatabase;
 import com.example.capstoneproject.model.Stock;
-import com.example.capstoneproject.model.StockViewModel;
 import com.example.capstoneproject.utils.AppExecutors;
-import com.example.capstoneproject.utils.SearchStocksOnNetwork;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -39,12 +32,14 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
     AnyChartView anyChartView;
     PortfolioAdapter portfolioAdapter;
     RecyclerView portfolioView;
+    private static GoogleAnalytics sAnalytics;
+    private static Tracker sTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        sAnalytics = GoogleAnalytics.getInstance(this);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
                 StockDatabase stockDatabase = StockDatabase.getInstance(getApplicationContext());
                 final List<Stock> dbStock = stockDatabase.stockDao().loadPortfolio();
                 if(dbStock != null && dbStock.size() > 0){
-                    Log.d(LOG_TAG,"Name: " + dbStock.get(0).getName() + "Price: " + dbStock.get(0).getPrice());
+
                     portfolioAdapter.setStocksList(dbStock);
                     portfolioView.setAdapter(portfolioAdapter);
 
@@ -81,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
                             Pie pie = AnyChart.pie();
                             List<DataEntry> elements = new ArrayList<>();
                             for (int i = 0; i < dbStock.size(); i++){
+                                Log.d(LOG_TAG,"Name: " + dbStock.get(i).getName() + "Price: " + dbStock.get(i).getPrice());
                                 Double value = dbStock.get(i).getNumberShares() * dbStock.get(i).getPrice();
                                 elements.add(new ValueDataEntry(dbStock.get(i).getName(),value));
                             }
@@ -92,17 +88,13 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
             }
         });
 
-    }
+        Tracker mTracker = this.getDefaultTracker();
+        Log.i(LOG_TAG, "Setting screen name: " + MainActivity.class);
+        mTracker.setScreenName("Image~" + MainActivity.class);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
-    public void setUpPieChart(List<Stock> stocks){
-        Pie pie = AnyChart.pie();
-        List<DataEntry> elements = new ArrayList<>();
-        for (int i = 0; i < stocks.size(); i++){
-            elements.add(new ValueDataEntry(stocks.get(i).getSymbol(),stocks.get(i).getNumberShares()));
-        }
-        pie.data(elements);
-        anyChartView.setChart(pie);
     }
+    
 
     private void showNoNetworkErrorMessage() {
         //scrollView.setVisibility(View.INVISIBLE);
@@ -117,5 +109,14 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
         Intent intent = new Intent(getApplicationContext(), StockDetailsActivity.class);
         intent.putExtra("stock", stock);
         startActivity(intent);
+    }
+
+    synchronized public Tracker getDefaultTracker() {
+        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+        if (sTracker == null) {
+            sTracker = sAnalytics.newTracker(R.xml.global_tracker);
+        }
+
+        return sTracker;
     }
 }
