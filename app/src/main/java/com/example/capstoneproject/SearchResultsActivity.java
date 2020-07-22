@@ -10,17 +10,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstoneproject.model.Stock;
-import com.example.capstoneproject.model.StockViewModel;
 import com.example.capstoneproject.utils.AppExecutors;
 import com.example.capstoneproject.utils.JSONUtils;
 import com.example.capstoneproject.utils.NetworkUtils;
-import com.example.capstoneproject.utils.SearchStocksOnNetwork;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -34,7 +30,6 @@ import java.util.List;
 public class SearchResultsActivity extends AppCompatActivity implements SearchResultsAdapter.SearchResultsAdapterOnClickHandler {
 
     private static String LOG_TAG = SearchResultsActivity.class.getName();
-    private StockViewModel stockViewModel;
     private RecyclerView recyclerView;
     private SearchResultsAdapter searchAdapter;
     private ProgressBar progressBar;
@@ -43,8 +38,6 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_results_activity);
-        stockViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(
-                getApplication()).create(StockViewModel.class);
 
         setTitle(getString(R.string.search));
 
@@ -81,13 +74,9 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
                                     }
                                 }
                             });
-
                         }
                     });
 
-
-                    //SearchStocksOnNetwork.searchStocks(getApplicationContext(),searchText);
-                    //searchStocks();
                 }else{
                     showNoNetworkErrorMessage();
                 }
@@ -132,36 +121,13 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
         try{
             URL searchStockUrl = NetworkUtils.buildSearchUrl(searchText);
             stocks = JSONUtils.extractStockFromSeachString(NetworkUtils.getResponseFromHttpUrl(searchStockUrl));
-        }catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }catch (JSONException | IOException e) {
             e.printStackTrace();
         }
 
         return stocks;
     }
 
-    private void searchStocks() {
-        stockViewModel.getStocks().observe(this, new Observer<List<Stock>>() {
-            @Override
-            public void onChanged(List<Stock> stocks) {
-
-                progressBar.setVisibility(View.INVISIBLE);
-                if(stocks != null){
-                    setTitle(getString(R.string.search_results));
-                    searchAdapter.setStocksList(stocks);
-                    searchAdapter.notifyDataSetChanged();
-                    recyclerView.setVisibility(View.VISIBLE);
-                    errorText.setVisibility(View.INVISIBLE);
-                }else{
-                    recyclerView.setVisibility(View.INVISIBLE);
-                    errorText.setText(R.string.no_search_result);
-                    errorText.setVisibility(View.VISIBLE);
-                    Log.e(LOG_TAG, "No results found");
-                }
-            }
-        });
-    }
 
     @Override
     public void onClick(Stock stock) {

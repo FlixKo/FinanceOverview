@@ -16,7 +16,6 @@ public class JSONUtils {
     private final static String JSON_BEST_MATCHES = "bestMatches";
     private final static String JSON_GLOBAL_QUOTE = "Global Quote";
     private final static String JSON_SYMBOL_SEARCH = "1. symbol";
-    private final static String JSON_SYMBOL = "01. symbol";
     private final static String JSON_OPEN = "02. open";
     private final static String JSON_HIGH = "03. high";
     private final static String JSON_LOW = "04. low";
@@ -36,17 +35,25 @@ public class JSONUtils {
     private final static String JSON_MATCH_SCORE = "9. matchScore";
 
     public static Stock extractStockFromJSON(String mJsonString, Stock stock) throws JSONException {
+        if(mJsonString == null || mJsonString.length() == 0){
+            Log.e(LOG_TAG,"JSON String is " + mJsonString);
+            return null;
+        }
         JSONObject jsonString = new JSONObject(mJsonString);
         JSONObject result = jsonString.getJSONObject(JSON_GLOBAL_QUOTE);
 
-        double open = result.getDouble(JSON_OPEN);
-        double high = result.getDouble(JSON_HIGH);
-        double low = result.getDouble(JSON_LOW);
+        if(result.length() == 0){
+            Log.e(LOG_TAG,"Empty JSON response");
+            return null;
+        }
+        double open = result.optDouble(JSON_OPEN);
+        double high = result.optDouble(JSON_HIGH);
+        double low = result.optDouble(JSON_LOW);
         double price = result.getDouble(JSON_PRICE);
-        long volume = result.getLong(JSON_VOLUME);
-        String latest_trading_day = result.getString(JSON_LATEST_TRADING_DAY);
-        double previous_close = result.getDouble(JSON_PREVIOUS_CLOSE);
-        double change = result.getDouble(JSON_CHANGE);
+        long volume = result.optLong(JSON_VOLUME);
+        String latest_trading_day = result.optString(JSON_LATEST_TRADING_DAY);
+        double previous_close = result.optDouble(JSON_PREVIOUS_CLOSE);
+        double change = result.optDouble(JSON_CHANGE);
         String change_percent = result.getString(JSON_CHANGE_PERCENT);
         stock.setOpen(open);
         stock.setHigh(high);
@@ -62,9 +69,18 @@ public class JSONUtils {
 
 
     public static ArrayList<Stock> extractStockFromSeachString(String mJsonString) throws JSONException {
+        if(mJsonString == null || mJsonString.length() == 0){
+            Log.e(LOG_TAG,"JSON String is " + mJsonString);
+            return null;
+        }
+
         JSONObject jsonString = new JSONObject(mJsonString);
         JSONArray resultsArray = jsonString.getJSONArray(JSON_BEST_MATCHES);
 
+        if(resultsArray.length() == 0){
+            Log.e(LOG_TAG,"Empty JSON response");
+            return null;
+        }
         ArrayList<Stock> stockSearchResultsArray = new ArrayList<>();
 
         String symbol;
@@ -84,11 +100,11 @@ public class JSONUtils {
             name = currentStock.getString(JSON_NAME);
             type = currentStock.getString(JSON_TYPE);
             region = currentStock.getString(JSON_REGION);
-            marketOpen = currentStock.getString(JSON_MARKET_OPEN);
-            markedClose = currentStock.getString(JSON_MARKET_CLOSE);
-            timezone = currentStock.getString(JSON_TIMEZONE);
+            marketOpen = currentStock.optString(JSON_MARKET_OPEN);
+            markedClose = currentStock.optString(JSON_MARKET_CLOSE);
+            timezone = currentStock.optString(JSON_TIMEZONE);
             currency = currentStock.getString(JSON_CURRENCY);
-            matchScore = currentStock.getString(JSON_MATCH_SCORE);
+            matchScore = currentStock.optString(JSON_MATCH_SCORE);
             stockSearchResultsArray.add(new Stock(symbol, name, type, region, marketOpen, markedClose, timezone, currency, matchScore));
         }
 

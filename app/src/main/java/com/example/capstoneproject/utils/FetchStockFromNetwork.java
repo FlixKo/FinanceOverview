@@ -3,8 +3,6 @@ package com.example.capstoneproject.utils;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
-
 import com.example.capstoneproject.database.StockDatabase;
 import com.example.capstoneproject.model.Stock;
 
@@ -37,18 +35,25 @@ public class FetchStockFromNetwork {
                 if (stockResult != null) {
                     try {
                         Stock updatedStock = JSONUtils.extractStockFromJSON(stockResult, stock);
-                        Log.d(LOG_TAG, updatedStock.getSymbol() + "; price: " + updatedStock.getPrice());
-                        Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(updatedStock.getSymbol());
-                        if (dbStock != null) {
-                            updatedStock.setNumberShares(dbStock.getNumberShares());
-                            stockDatabase.stockDao().deleteStock(dbStock);
+                        if(updatedStock != null){
+                            Log.d(LOG_TAG, updatedStock.getSymbol() + "; price: " + updatedStock.getPrice());
+                            Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(updatedStock.getSymbol());
+                            if (dbStock != null) {
+                                updatedStock.setNumberShares(dbStock.getNumberShares());
+                                stockDatabase.stockDao().deleteStock(dbStock);
+                            }
+                            long result = stockDatabase.stockDao().insertStock(updatedStock);
+                            Log.d(LOG_TAG, "insertion result: " + result);
+                        }else{
+                            Log.e(LOG_TAG, "unable to parse response JSON");
                         }
-                        long result = stockDatabase.stockDao().insertStock(updatedStock);
-                        Log.d(LOG_TAG, "insertion result: " + result);
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else{
+                    Log.e(LOG_TAG, "Null response from server");
                 }
             }
         });

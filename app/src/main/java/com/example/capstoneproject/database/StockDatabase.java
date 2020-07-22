@@ -24,8 +24,7 @@ public abstract class StockDatabase extends RoomDatabase {
                 Log.d(LOG_TAG, "Creating new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         StockDatabase.class, StockDatabase.DATABASE_NAME)
-                        //.allowMainThreadQueries()
-                        .fallbackToDestructiveMigration()
+                        //.fallbackToDestructiveMigration()
                         .addMigrations(MIGRATION_1_2)
                         .build();
             }

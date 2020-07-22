@@ -95,14 +95,6 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
 
     }
 
-
-    private void showNoNetworkErrorMessage() {
-        //scrollView.setVisibility(View.INVISIBLE);
-        //mErrorMessageDisplay.setText(getString(R.string.no_network));
-        //mErrorMessageDisplay.setVisibility(View.VISIBLE);
-        Log.e(LOG_TAG,"No Network");
-    }
-
     @Override
     public void onClick(Stock stock) {
         Log.d(LOG_TAG,"clicked on " + stock.getName());
