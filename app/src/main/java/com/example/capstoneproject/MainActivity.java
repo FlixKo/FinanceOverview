@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
     }
-    
+
 
     private void showNoNetworkErrorMessage() {
         //scrollView.setVisibility(View.INVISIBLE);
