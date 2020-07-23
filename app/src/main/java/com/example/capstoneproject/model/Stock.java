@@ -88,6 +88,8 @@ public class Stock implements Parcelable {
         this.id = parcel.readInt();
     }
 
+    public int getId(){return id;}
+
     public double getNumberShares() {
         return numberShares;
     }
