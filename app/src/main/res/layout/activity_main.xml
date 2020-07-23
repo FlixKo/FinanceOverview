@@ -43,5 +43,6 @@
         android:background="@color/cardview_dark_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/main_portfolio_recycler_view"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:contentDescription="@string/search_for_stocks_content_description"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

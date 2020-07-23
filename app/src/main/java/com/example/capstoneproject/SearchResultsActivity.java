@@ -1,6 +1,7 @@
 package com.example.capstoneproject;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -59,23 +60,25 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
                 Log.d(LOG_TAG, "EditText input: " + searchText);
 
                 if(NetworkUtils.isConnected(getApplicationContext())){
-                    AppExecutors.getInstance().networkIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            final List<Stock> searchResultStocks = search(searchText);
 
-                            recyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(searchResultStocks != null){
-                                        setUpView(searchResultStocks);
-                                    }else{
-                                        setUpErrorView();
-                                    }
-                                }
-                            });
-                        }
-                    });
+                    new SearchAsyncTask().execute(searchText);
+//                    AppExecutors.getInstance().networkIO().execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            final List<Stock> searchResultStocks = search(searchText);
+//
+//                            recyclerView.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    if(searchResultStocks != null){
+//                                        setUpView(searchResultStocks);
+//                                    }else{
+//                                        setUpErrorView();
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    });
 
                 }else{
                     showNoNetworkErrorMessage();
@@ -135,5 +138,36 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
         Intent intent = new Intent(getApplicationContext(), StockDetailsActivity.class);
         intent.putExtra("stock", stock);
         startActivity(intent);
+    }
+
+
+    private class SearchAsyncTask extends AsyncTask<String, Void, List<Stock>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected List<Stock> doInBackground(String... urls) {
+
+            List<Stock> stocks =  null;
+            try{
+                URL searchStockUrl = NetworkUtils.buildSearchUrl(urls[0]);
+                stocks = JSONUtils.extractStockFromSeachString(NetworkUtils.getResponseFromHttpUrl(searchStockUrl));
+            }catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+
+            return stocks;
+
+        }
+
+        protected void onPostExecute(final List<Stock> stocks) {
+                    if(stocks != null){
+                        setUpView(stocks);
+                    }else{
+                        setUpErrorView();
+                    }
+        }
     }
 }
