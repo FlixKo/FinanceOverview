@@ -1,4 +1,4 @@
-package com.example.capstoneproject.widget;
+package com.example.capstoneproject;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -6,9 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
-
-import com.example.capstoneproject.MainActivity;
-import com.example.capstoneproject.R;
 
 /**
  * Implementation of App Widget functionality.
@@ -23,9 +20,9 @@ public class PortfolioWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.portfolio_widget_provider);
         //views.setTextViewText(R.id.appwidget_text, widgetText);
 
-        Intent startMainActivityIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,startMainActivityIntent,0);
-        views.setOnClickPendingIntent(R.id.widgetListView,pendingIntent);
+        //Intent startMainActivityIntent = new Intent(context, MainActivity.class);
+        //PendingIntent pendingIntent = PendingIntent.getActivity(context,0,startMainActivityIntent,0);
+        //views.setOnClickPendingIntent(R.id.widgetListView,pendingIntent);
 
         Intent intent = new Intent(context, PortfolioWidgetRemoteViewsService.class);
         views.setRemoteAdapter(R.id.widgetListView, intent);

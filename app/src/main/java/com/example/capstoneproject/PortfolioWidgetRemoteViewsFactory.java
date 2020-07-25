@@ -1,14 +1,10 @@
-package com.example.capstoneproject.widget;
+package com.example.capstoneproject;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
-import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.example.capstoneproject.MainActivity;
-import com.example.capstoneproject.R;
 import com.example.capstoneproject.database.StockDao;
 import com.example.capstoneproject.database.StockDatabase;
 import com.example.capstoneproject.model.Stock;
@@ -53,8 +49,9 @@ public class PortfolioWidgetRemoteViewsFactory implements RemoteViewsService.Rem
     public RemoteViews getViewAt(int position) {
 
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
-        rv.setTextViewText(R.id.portfolio_text_view, stocks.get(position).getName());
-
+        //Log.d(LOG_TAG,stocks.get(position).getName());
+        rv.setTextViewText(R.id.widget_portfolio_element, stocks.get(position).getName());
+        rv.setTextViewText(R.id.widget_portfolio_element_price, String.format("%.2f",stocks.get(position).getPrice()));
         return rv;
     }
 

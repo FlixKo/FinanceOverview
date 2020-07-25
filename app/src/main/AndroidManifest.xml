@@ -12,7 +12,7 @@
         android:roundIcon="@drawable/finance_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".widget.PortfolioWidgetProvider">
+        <receiver android:name=".PortfolioWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -36,7 +36,7 @@
         <activity android:name=".SearchResultsActivity" />
         <activity android:name=".StockDetailsActivity" />
 
-        <service android:name=".widget.PortfolioWidgetRemoteViewsService"
+        <service android:name=".PortfolioWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS"></service>
     </application>
 

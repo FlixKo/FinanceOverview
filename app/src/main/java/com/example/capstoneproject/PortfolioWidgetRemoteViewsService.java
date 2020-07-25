@@ -1,4 +1,4 @@
-package com.example.capstoneproject.widget;
+package com.example.capstoneproject;
 
 import android.content.Intent;
 import android.widget.RemoteViewsService;

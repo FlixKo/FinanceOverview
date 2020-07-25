@@ -7,6 +7,19 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:padding="16dp"
+        android:id="@+id/no_stocks_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_stock_help"
+        app:layout_constraintBottom_toBottomOf="@+id/any_chart_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/any_chart_view"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        android:textSize="32dp"/>
+
     <com.anychart.AnyChartView
         android:id="@+id/any_chart_view"
         android:layout_width="0dp"
@@ -40,9 +53,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:background="@color/cardview_dark_background"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/main_portfolio_recycler_view"
-        app:srcCompat="@android:drawable/ic_input_add"
+        app:srcCompat="@android:drawable/ic_menu_add"
         android:contentDescription="@string/search_for_stocks_content_description"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class JSONUtils {
     private static String LOG_TAG = JSONUtils.class.getName();
 
+    private final static String NOTE = "Note";
     private final static String JSON_BEST_MATCHES = "bestMatches";
     private final static String JSON_GLOBAL_QUOTE = "Global Quote";
     private final static String JSON_SYMBOL_SEARCH = "1. symbol";
@@ -109,5 +110,10 @@ public class JSONUtils {
         }
 
         return stockSearchResultsArray;
+    }
+
+    public static String extractNote(String mJsonString) throws JSONException{
+        JSONObject jsonString = new JSONObject(mJsonString);
+        return jsonString.getString(NOTE);
     }
 }

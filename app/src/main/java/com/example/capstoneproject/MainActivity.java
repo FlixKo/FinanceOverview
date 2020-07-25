@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -17,9 +18,6 @@ import com.anychart.charts.Pie;
 import com.example.capstoneproject.database.StockDatabase;
 import com.example.capstoneproject.model.Stock;
 import com.example.capstoneproject.utils.AppExecutors;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -32,14 +30,11 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
     AnyChartView anyChartView;
     PortfolioAdapter portfolioAdapter;
     RecyclerView portfolioView;
-    private static GoogleAnalytics sAnalytics;
-    private static Tracker sTracker;
-
+    TextView noStocks;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sAnalytics = GoogleAnalytics.getInstance(this);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +45,10 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
             }
         });
 
+        noStocks = findViewById(R.id.no_stocks_text_view);
+        noStocks.setVisibility(View.GONE);
         anyChartView = findViewById(R.id.any_chart_view);
+
         //setUpPieChart(dbStock);
 
         ArrayList<Stock> emptyList = new ArrayList<>();
@@ -82,16 +80,16 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
                             }
                             pie.data(elements);
                             anyChartView.setChart(pie);
+                            anyChartView.setVisibility(View.VISIBLE);
                         }
                     });
                 }
+                else{
+                    anyChartView.setVisibility(View.INVISIBLE);
+                    noStocks.setVisibility(View.VISIBLE);
+                }
             }
         });
-
-        Tracker mTracker = this.getDefaultTracker();
-        Log.i(LOG_TAG, "Setting screen name: " + MainActivity.class);
-        mTracker.setScreenName("Image~" + MainActivity.class);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
     }
 
@@ -101,14 +99,5 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
         Intent intent = new Intent(getApplicationContext(), StockDetailsActivity.class);
         intent.putExtra("stock", stock);
         startActivity(intent);
-    }
-
-    synchronized public Tracker getDefaultTracker() {
-        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-        if (sTracker == null) {
-            sTracker = sAnalytics.newTracker(R.xml.global_tracker);
-        }
-
-        return sTracker;
     }
 }

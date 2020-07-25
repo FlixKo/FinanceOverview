@@ -20,41 +20,46 @@ public class FetchStockFromNetwork {
     }
 
     private static void getStockDetails(final URL url, final Context context, final Stock stock) {
-        AppExecutors.getInstance().networkIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                StockDatabase stockDatabase = StockDatabase.getInstance(context);
+        AppExecutors.getInstance().networkIO().execute(() -> {
+            StockDatabase stockDatabase = StockDatabase.getInstance(context);
 
-                String stockResult = null;
+            String stockResult = null;
+            try {
+                stockResult = NetworkUtils.getResponseFromHttpUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (stockResult != null) {
                 try {
-                    stockResult = NetworkUtils.getResponseFromHttpUrl(url);
-                } catch (IOException e) {
+                    Stock updatedStock = JSONUtils.extractStockFromJSON(stockResult, stock);
+                    if(updatedStock != null){
+                        Log.d(LOG_TAG, "updated stock from network: " + updatedStock.getSymbol() + "; price: " + updatedStock.getPrice());
+                        Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(updatedStock.getSymbol());
+
+                        if (dbStock != null) {
+                            Log.d(LOG_TAG,"stock in database; number shares: " + dbStock.getNumberShares());
+                            updatedStock.setNumberShares(dbStock.getNumberShares());
+                            stockDatabase.stockDao().deleteStock(dbStock);
+                        }
+                        long result = stockDatabase.stockDao().insertStock(updatedStock);
+                        Log.d(LOG_TAG, "insertion result: " + result);
+                    }else{
+                        Log.e(LOG_TAG, "unable to parse response JSON");
+                    }
+
+
+                } catch (JSONException e) {
+                    try {
+                        String note = JSONUtils.extractNote(stockResult);
+                        Log.e(LOG_TAG,note);
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
                     e.printStackTrace();
                 }
-
-                if (stockResult != null) {
-                    try {
-                        Stock updatedStock = JSONUtils.extractStockFromJSON(stockResult, stock);
-                        if(updatedStock != null){
-                            Log.d(LOG_TAG, updatedStock.getSymbol() + "; price: " + updatedStock.getPrice());
-                            Stock dbStock = stockDatabase.stockDao().loadStockBySymbol(updatedStock.getSymbol());
-                            if (dbStock != null) {
-                                updatedStock.setNumberShares(dbStock.getNumberShares());
-                                stockDatabase.stockDao().deleteStock(dbStock);
-                            }
-                            long result = stockDatabase.stockDao().insertStock(updatedStock);
-                            Log.d(LOG_TAG, "insertion result: " + result);
-                        }else{
-                            Log.e(LOG_TAG, "unable to parse response JSON");
-                        }
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }else{
-                    Log.e(LOG_TAG, "Null response from server");
-                }
+            }else{
+                Log.e(LOG_TAG, "Null response from server");
             }
         });
     }

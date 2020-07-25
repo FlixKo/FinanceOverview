@@ -1,7 +1,6 @@
 package com.example.capstoneproject;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,9 +17,6 @@ import com.example.capstoneproject.model.Stock;
 import com.example.capstoneproject.utils.AppExecutors;
 import com.example.capstoneproject.utils.JSONUtils;
 import com.example.capstoneproject.utils.NetworkUtils;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -61,38 +57,29 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
 
                 if(NetworkUtils.isConnected(getApplicationContext())){
 
-                    new SearchAsyncTask().execute(searchText);
-//                    AppExecutors.getInstance().networkIO().execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            final List<Stock> searchResultStocks = search(searchText);
-//
-//                            recyclerView.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    if(searchResultStocks != null){
-//                                        setUpView(searchResultStocks);
-//                                    }else{
-//                                        setUpErrorView();
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    });
+                    AppExecutors.getInstance().networkIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            final List<Stock> searchResultStocks = search(searchText);
+
+                            recyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(searchResultStocks != null){
+                                        setUpView(searchResultStocks);
+                                    }else{
+                                        setUpErrorView();
+                                    }
+                                }
+                            });
+                        }
+                    });
 
                 }else{
                     showNoNetworkErrorMessage();
                 }
-
             }
         });
-
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        mAdView.loadAd(adRequest);
-
     }
 
     private void setUpView(List<Stock> stocks){
@@ -106,7 +93,7 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
 
     private void setUpErrorView(){
         progressBar.setVisibility(View.INVISIBLE);
-        recyclerView.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.GONE);
         errorText.setText(R.string.no_search_result);
         errorText.setVisibility(View.VISIBLE);
         Log.e(LOG_TAG, "No results found");
@@ -121,10 +108,18 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
 
     private List<Stock> search(String searchText){
         List<Stock> stocks =  null;
+        String requestResult = "";
         try{
             URL searchStockUrl = NetworkUtils.buildSearchUrl(searchText);
-            stocks = JSONUtils.extractStockFromSeachString(NetworkUtils.getResponseFromHttpUrl(searchStockUrl));
+            requestResult = NetworkUtils.getResponseFromHttpUrl(searchStockUrl);
+            stocks = JSONUtils.extractStockFromSeachString(requestResult);
         }catch (JSONException | IOException e) {
+            try {
+                String note = JSONUtils.extractNote(requestResult);
+                Log.e(LOG_TAG,note);
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
         }
 
@@ -138,36 +133,5 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
         Intent intent = new Intent(getApplicationContext(), StockDetailsActivity.class);
         intent.putExtra("stock", stock);
         startActivity(intent);
-    }
-
-
-    private class SearchAsyncTask extends AsyncTask<String, Void, List<Stock>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        protected List<Stock> doInBackground(String... urls) {
-
-            List<Stock> stocks =  null;
-            try{
-                URL searchStockUrl = NetworkUtils.buildSearchUrl(urls[0]);
-                stocks = JSONUtils.extractStockFromSeachString(NetworkUtils.getResponseFromHttpUrl(searchStockUrl));
-            }catch (JSONException | IOException e) {
-                e.printStackTrace();
-            }
-
-            return stocks;
-
-        }
-
-        protected void onPostExecute(final List<Stock> stocks) {
-                    if(stocks != null){
-                        setUpView(stocks);
-                    }else{
-                        setUpErrorView();
-                    }
-        }
     }
 }

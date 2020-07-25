@@ -48,9 +48,9 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.Port
     public void onBindViewHolder(@NonNull PortfolioHolder holder, int position) {
         holder.nameTextView.setText(stocks.get(position).getName() + " (" + stocks.get(position).getSymbol() + ")");
         double value = stocks.get(position).getNumberShares() * stocks.get(position).getPrice();
-        holder.valueTextView.setText(Double.toString(value) + " " + stocks.get(position).getCurrency());
+        holder.valueTextView.setText(String.format("%.2f",value) + " " + stocks.get(position).getCurrency());
         holder.numShares.setText(Double.toString(stocks.get(position).getNumberShares()));
-        holder.currentPrice.setText(Double.toString(stocks.get(position).getPrice()));
+        holder.currentPrice.setText(String.format("%.2f",stocks.get(position).getPrice()));
         holder.currency.setText(stocks.get(position).getCurrency());
     }
 

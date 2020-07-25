@@ -21,9 +21,10 @@
     <string name="dummy_region">Xetra</string>
     <string name="dummy_currency">USD</string>
     <string name="current_price_label">Current price:</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="search_for_stocks_content_description">Search for stocks</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="widget_title">Portfolio Overview</string>
+    <string name="no_details_for_stock">No details for this stock available. \nYou may only make 5 requests per minute, please wait shortly until you can access more information.\nIf information is not updated there simple is non available.</string>
+    <string name="add_stock_help">To add a stock, click on the + button on the bottom right of the screen.</string>
 </resources>
