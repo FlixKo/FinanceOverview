@@ -1,8 +1,5 @@
-# CapstoneProject
-Udacity Android Developer Final Project
-
 # Description 
-This application enables you to search for stocks you own. You may enter the amount of stocks you own and get an overview of your personal portfolio with its current value.
+This Android application enables you to search for stocks you own. You may enter the amount of stocks you own and get an overview of your personal portfolio with its current value displayed in a pie chart.
 
 # Features
 - Search for a stock using its name
