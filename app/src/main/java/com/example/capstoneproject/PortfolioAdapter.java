@@ -1,6 +1,7 @@
 package com.example.capstoneproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import java.util.List;
 
 
 public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.PortfolioHolder> {
+
+    private static String LOG_TAG = PortfolioAdapter.class.getName();
 
     private List<Stock> stocks;
     private final PortfolioAdapterOnClickHandler clickHandler;
@@ -51,6 +54,7 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.Port
         holder.valueTextView.setText(String.format("%.2f",value) + " " + stocks.get(position).getCurrency());
         holder.numShares.setText(Double.toString(stocks.get(position).getNumberShares()));
         holder.currentPrice.setText(String.format("%.2f",stocks.get(position).getPrice()));
+        //Log.d(LOG_TAG,"Price: " + stocks.get(position).getPrice());
         holder.currency.setText(stocks.get(position).getCurrency());
     }
 
@@ -72,7 +76,7 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.Port
             nameTextView = itemView.findViewById(R.id.portfolio_text_view);
             valueTextView = itemView.findViewById(R.id.value_text_view);
             numShares = itemView.findViewById(R.id.number_of_shares_owned_text_view);
-            currentPrice = itemView.findViewById(R.id.currency_text_view);
+            currentPrice = itemView.findViewById(R.id.current_price_text_view);
             currency = itemView.findViewById(R.id.currency_text_view);
             itemView.setOnClickListener(this);
         }

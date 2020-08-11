@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
     PortfolioAdapter portfolioAdapter;
     RecyclerView portfolioView;
     TextView noStocks;
+    TextView portfolioSize;
+    TextView portfolioCurrency;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
         noStocks = findViewById(R.id.no_stocks_text_view);
         noStocks.setVisibility(View.GONE);
         anyChartView = findViewById(R.id.any_chart_view);
-
+        portfolioSize = findViewById(R.id.portfolio_size_text_view);
+        portfolioCurrency = findViewById(R.id.portfolio_currency_text_view);
         //setUpPieChart(dbStock);
 
         ArrayList<Stock> emptyList = new ArrayList<>();
@@ -73,12 +76,17 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
                         public void run() {
                             Pie pie = AnyChart.pie();
                             List<DataEntry> elements = new ArrayList<>();
+                            Double portfolioSizeAccumulated = 0.0;
                             for (int i = 0; i < dbStock.size(); i++){
                                 Log.d(LOG_TAG,"Name: " + dbStock.get(i).getName() + "Price: " + dbStock.get(i).getPrice());
                                 Double value = dbStock.get(i).getNumberShares() * dbStock.get(i).getPrice();
                                 elements.add(new ValueDataEntry(dbStock.get(i).getName(),value));
+                                portfolioSizeAccumulated += value;
                             }
                             pie.data(elements);
+                            portfolioSize.setText(String.format("%.2f",portfolioSizeAccumulated));
+                            portfolioCurrency.setText("EUR");
+                            portfolioSize.setVisibility(View.VISIBLE);
                             anyChartView.setChart(pie);
                             anyChartView.setVisibility(View.VISIBLE);
                         }
@@ -86,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements PortfolioAdapter.
                 }
                 else{
                     anyChartView.setVisibility(View.INVISIBLE);
+                    portfolioSize.setVisibility(View.INVISIBLE);
                     noStocks.setVisibility(View.VISIBLE);
                 }
             }

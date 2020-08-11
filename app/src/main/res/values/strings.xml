@@ -27,4 +27,5 @@
     <string name="widget_title">Portfolio Overview</string>
     <string name="no_details_for_stock">No details for this stock available. \nYou may only make 5 requests per minute, please wait shortly until you can access more information.\nIf information is not updated there simple is non available.</string>
     <string name="add_stock_help">To add a stock, click on the + button on the bottom right of the screen.</string>
+    <string name="portfolio_value">Portfolio Value:</string>
 </resources>
